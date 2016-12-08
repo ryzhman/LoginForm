@@ -121,25 +121,47 @@
     }
 
     function validateSuccess(user) {
-        var parent = document.getElementById('divForLoginForm');
+        var parentForm = document.getElementById('divForLoginForm');
+        // create parent div for modal window
+        var popupDiv = document.createElement('div');
+        popupDiv.setAttribute('class', 'popupDiv');
+        popupDiv.style.display = "block";
+        //create child div with data for modal window
         var popupWindow = document.createElement('div');
         popupWindow.setAttribute('class', 'popupWindow');
+        
         var close = document.createElement('span');
         close.setAttribute('class', 'close');
         close.innerText = "X";
-        close.addEventListener('click', function (event) {
-            popupWindow.style.display = "none";
-        });
+        close.addEventListener('click', closeModal);
+        
         var info = document.createElement('p');
+        info.setAttribute('class', 'modalWindowText');
         info.innerText = "Welcome " + user.name + "\n" +
             "You are granted " + user.access +
-            ". \n Last time you logged in " + user.lastVisit;
+            " access. \n Last time you logged in " + user.lastVisit;
+
+        var closeInfo = document.createElement('p');
+        closeInfo.innerText = "*You can close this window by pressing X or ESC button";
+        closeInfo.setAttribute('class','closeInfo');
+
+        document.addEventListener('keydown', closeModal); //hide modal window by pressing enter
         user.lastVisit = (new Date()).toString();
+
         popupWindow.appendChild(close);
         popupWindow.appendChild(info);
-        popupWindow.style.display = "block";
+        popupWindow.appendChild(closeInfo);
 
-        parent.appendChild(popupWindow);
+        popupDiv.appendChild(popupWindow);
+        parentForm.appendChild(popupDiv);
+    }
+
+    function closeModal(event){
+        event.stopPropagation();
+        var modal = document.getElementsByClassName('popupDiv')[0];
+        if(event != null && event.target.className == "close" || event.key == "Escape"){
+            modal.style.display = "none";
+        }
     }
 
 
